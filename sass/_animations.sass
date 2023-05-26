@@ -1,17 +1,17 @@
-@keyframes change-bg
+@keyframes green-background
     0%
-        background-color: white 
+        background-color: $white 
     50%
-        background-color: red 
+        background-color: $green
     100%
-        background-color: white
-@keyframes shake 
-    33%
-        transform: translateX(-50%)
-    66%
-        transform: translateX(50%)
+        background-color: $white
+@keyframes red-background
+    0%
+        background-color: $white 
+    50%
+        background-color: $red
     100%
-        transform: translateX(0)
+        background-color: $white
 @keyframes hide
     0%
         opacity: 1
@@ -25,12 +25,23 @@
         opacity: 0.2
     100%
         opacity: 0
+@keyframes shake 
+    0%
+        transform: translateX(0)
+    25%
+        transform: translateX(10px)
+    50%
+        transform: translateX(-10px)
+    75%
+        transform: translateX(10px)
+    100%
+        transform: translateX(0)
 
-.changeBg
-    animation: change-bg .3s
-
-.shake
-    animation-name: shake .3s
-
+.green-bg
+    animation: green-background .3s
+.red-bg
+    animation: red-background .5s
 .hide-object
     animation: hide .5s
+.shake-object
+    animation: shake .5s

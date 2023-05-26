@@ -21,6 +21,7 @@ var time = 1000;
 var pickFieldCount = 1;
 
 // HTML elements variables
+var body = document.getElementsByTagName("body")[0];
 var grid = document.getElementById("grid");
 var fields = document.getElementsByClassName("field");
 var level = document.getElementById("level");
@@ -29,6 +30,10 @@ var restart = document.getElementById("restart");
 var startScreen = document.getElementById("start-screen");
 var playBtn = document.getElementById("play-button");
 var submit = document.getElementById("submit");
+var dark = document.getElementById("dark");
+var bright = document.getElementById("bright");
+var ru = document.getElementById("ru-lang");
+var eng = document.getElementById("eng-lang");
 
 // Makes grid and each field in it clickable
 function gridUnclickable() {
@@ -68,6 +73,23 @@ function submitCheck() {
   }
 }
 
+// Starts game
+function startGame() {
+  gridUnclickable();
+  setTimeout(function () {
+    randomFillArray();
+    show();
+  }, 2000);
+}
+
+// Restarts the game from the first level
+function gameRestart() {
+  restartGrid();
+  localLevel = 1;
+  level.innerHTML = `Level ${localLevel}`;
+  startGame();
+}
+
 // Fills in numbers in the array
 function randomFillArray() {
   if (arrayOfRandomNums !== []) {
@@ -99,12 +121,29 @@ function show() {
   }
 }
 
-// Make fields clickable
-function userPick() {
-  // Adds event listener to each field
+// Clears the grid
+function restartGrid() {
+  for (let i = 0; i < fields.length; i++) {
+    fields[i].innerHTML = "";
+  }
+  arrayOfUserNums = [];
+  pickFieldCount = 1;
+  submitCheck();
+  restartCheck();
+}
+
+// Event listener for play button on the start screen
+playBtn.addEventListener("click", function () {
+  startScreen.classList.add("hide-object");
+
+  setTimeout(function () {
+    startScreen.style.display = "none";
+  }, 500);
+
+  // Make fields clickable
   for (let i = 0; i < fields.length; i++) {
     let elem = fields[i];
-
+    // Adds event listener to each field
     elem.addEventListener("click", function () {
       if (elem.innerHTML === "") {
         elem.innerHTML = `<div class="selected">${pickFieldCount}</div>`;
@@ -121,38 +160,38 @@ function userPick() {
       }
     });
   }
-}
 
-// Event listener for play button on the start screen
-playBtn.addEventListener("click", function () {
-  startScreen.classList.add("hide-object");
-
-  setTimeout(function () {
-    startScreen.style.display = "none";
-  }, 500);
-
-  setTimeout(function () {
-    // Calling functions
-    randomFillArray();
-    show();
-    userPick();
-  }, 2000);
+  startGame();
 });
 
 // Event listener for submit button
 submit.addEventListener("click", function () {
-  console.log(arrayOfRandomNums);
-  console.log(arrayOfUserNums);
-  console.log(arrayOfRandomNums === arrayOfUserNums);
+  if (arrayOfRandomNums.join("") === arrayOfUserNums.join("")) {
+    body.classList.add("green-bg");
+    setTimeout(function () {
+      body.classList.remove("green-bg");
+    }, 500);
+
+    if (localScore < localLevel) {
+      score.innerHTML = `Score: ${++localScore}`;
+    }
+
+    level.innerHTML = `Level ${++localLevel}`;
+
+    restartGrid();
+    startGame();
+  } else {
+    body.classList.add("red-bg");
+    grid.classList.add("shake-object");
+    setTimeout(function () {
+      body.classList.remove("red-bg");
+      grid.classList.remove("shake-object");
+    }, 500);
+    gameRestart();
+  }
 });
 
 // Event listener for restart button
 restart.addEventListener("click", function () {
-  for (let i = 0; i < fields.length; i++) {
-    fields[i].innerHTML = "";
-  }
-  arrayOfUserNums = [];
-  pickFieldCount = 1;
-  submitCheck();
-  restartCheck();
+  restartGrid();
 });
